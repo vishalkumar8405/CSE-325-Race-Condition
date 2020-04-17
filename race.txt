@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include<unistd.h>
+#include <semaphore.h>
+
+using namespace std;
+int counter = 1;
+int sema;
+
+void * first(void *) {
+
+    while(sema <= 0)
+        ;
+
+    int a;
+    sema--;
+    a = counter;
+    a = a + 1;
+    sleep(1);
+    counter = a;
+    sema++;
+    printf("the value of counter is %d\n", counter);
+}
+void * second(void *) {
+
+    while(sema <= 0)
+        ;
+
+    int a;
+    sema--;
+    a = counter;
+    a = a - 1;
+    counter = a;
+    sleep(1);
+    sema++;
+    printf("the value of counter is %d \n", counter);
+}
+int main() {
+    pthread_t thread1, thread2;
+    sema = 1;
+   
+    pthread_create(&thread1, NULL, first, NULL);
+    pthread_create( & thread2, NULL, second, NULL);
+    sleep(3);
+ 
+
+    pthread_join(thread1, NULL);
+    pthread_join(thread2, NULL);
+    printf("the value of counter is %d\n", counter);
+}
